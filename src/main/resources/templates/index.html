@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>Добро пожаловать</title>
-    <meta charset="UTF-8">
+    <title>Spring Security Example</title>
 </head>
 <body>
-<h1>Добро пожаловать в приложение!</h1>
-<p>Для продолжения выполните вход:</p>
-<a th:href="@{/login}">Войти</a>
+<h1>Welcome to Index PAGE!</h1>
+<a href="/logout">Выйти</a>
+
+
 </body>
 </html>

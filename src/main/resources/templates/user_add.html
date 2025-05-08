@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Spring Security Example</title>
+
+</head>
+<body>
+<h1>User, welcome spring boot security page!</h1>
+<table>
+  <tr>
+    <th>ID</th>
+    <td th:text="${user.getId()}">1</td>
+  </tr>
+  <tr>
+    <th>Имя</th>
+    <td th:text="${user.getUsername()}">Имя</td>
+  </tr>
+  <tr>
+    <th>Фамилия</th>
+    <td th:text="${user.getLastName()}">Фамилия</td>
+
+  </tr>
+  <tr>
+    <th>Email</th>
+    <td th:text="${user.getEmail()}">example@example.com</td>
+  </tr>
+</table>
+<a href="/logout">Выйти</a>
+</body>
+</html>
