@@ -1,17 +1,20 @@
 package ru.kata.spring.boot_security.demo.models;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
+
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -19,25 +22,25 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Pattern(regexp = "^[А-ЯA-Z][а-яa-z]+$", message = "неккоректный ввод Имени")
-    @NotBlank(message = "Имя не может быть путсым")
-    @Column(name = "first_name")
-    private String username;
+    @NotEmpty(message = "Имя не может быть пустым")
+    @Column(name = "first_Name")
+    private String firstName;
 
     @Pattern(regexp = "^[А-ЯA-Z][а-яa-z]+$", message = "неккоректный ввод Фамилии")
-    @NotBlank(message = "Фамилия не может быть пустой")
+    @NotEmpty(message = "Фамилия не может быть пустым")
     @Column(name = "last_name")
     private String lastName;
 
-    @NotBlank(message = "Email не может быть пустым")
+    @NotEmpty(message = "Email не может быть пустым")
     @Email(message = "некорректный Email")
     @Column(unique = true, name = "email")
     private String email;
 
 
-    @NotBlank(message = "Пароль не может быть пустым")
+    @NotEmpty(message = "Пароль не может быть пустым")
     @Column(name = "password")
     private String password;
 
@@ -58,6 +61,11 @@ public class User implements UserDetails {
     @Override
     public String getPassword() {
         return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.firstName;
     }
 
     @Override
@@ -83,8 +91,8 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, String lastName, String email, String password, Set<Role> roles) {
-        this.username = username;
+    public User(String firstName, String lastName, String email, String password, Set<Role> roles) {
+        this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
@@ -99,16 +107,16 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUsername(String firstname) {
-        this.username = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
@@ -135,7 +143,7 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", firstName='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +

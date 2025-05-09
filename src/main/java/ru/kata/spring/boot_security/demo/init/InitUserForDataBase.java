@@ -1,24 +1,25 @@
 package ru.kata.spring.boot_security.demo.init;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.repository.UserRepository;
-import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import javax.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.Set;
 
 @Component
 public class InitUserForDataBase {
     private final UserService userService;
+    private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
-    private final RoleServiceImpl roleService;
 
-    public InitUserForDataBase(UserService userService, RoleServiceImpl roleService, PasswordEncoder passwordEncoder) {
+    public InitUserForDataBase(UserService userService,
+                               RoleService roleService,
+                               PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
@@ -30,15 +31,15 @@ public class InitUserForDataBase {
             Role administratorRole = new Role("ROLE_ADMIN");
             Role userRole = new Role("ROLE_USER");
 
-            Set<Role> rolesAdministrator = new HashSet<>();
+            Set<Role> rolesAdmin = new HashSet<>();
             Set<Role> rolesUser = new HashSet<>();
-            rolesAdministrator.add(administratorRole);
+            rolesAdmin.add(administratorRole);
             rolesUser.add(userRole);
             User administrator = new User("Admin",
                     "Admin",
                     "admin@admin.ru",
                     "admin",
-                    rolesAdministrator);
+                    rolesAdmin);
             User user = new User("User",
                     "User",
                     "user@user.ru",
@@ -48,6 +49,7 @@ public class InitUserForDataBase {
             roleService.add(userRole);
             userService.add(administrator);
             userService.add(user);
+
         }
     }
 }
