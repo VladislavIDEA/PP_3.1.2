@@ -44,8 +44,8 @@
 </head>
 <body>
 <div class="header">
-    <div>Email: <span th:text="${user.getEmail()}">example@example.com</span></div>
-    <div>Role: <span th:text="${user.getRoles()}">User</span></div>
+    <div>Email: <span th:text="${user.email}">example@example.com</span></div>
+    <div>Roles: <span th:text="${#strings.listJoin(user.roles.![name], ', ')}">User</span></div>
     <button class="logout-button" onclick="location.href='/logout'">Logout</button>
 </div>
 <div class="sidebar">

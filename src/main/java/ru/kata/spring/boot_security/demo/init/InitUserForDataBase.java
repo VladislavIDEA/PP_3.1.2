@@ -2,6 +2,7 @@ package ru.kata.spring.boot_security.demo.init;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
@@ -26,30 +27,26 @@ public class InitUserForDataBase {
     }
 
     @PostConstruct
+    @Transactional
     public void init() {
         if (roleService.findAll().isEmpty()) {
-            Role administratorRole = new Role("ROLE_ADMIN");
-            Role userRole = new Role("ROLE_USER");
+            Role administratorRole = new Role("ADMIN");
+            Role userRole = new Role("USER");
 
             Set<Role> rolesAdmin = new HashSet<>();
             Set<Role> rolesUser = new HashSet<>();
             rolesAdmin.add(administratorRole);
             rolesUser.add(userRole);
-            User administrator = new User("Admin",
-                    "Admin",
-                    "admin@admin.ru",
-                    "admin",
-                    rolesAdmin);
-            User user = new User("User",
-                    "User",
-                    "user@user.ru",
-                    "user",
-                    rolesUser);
+
+            User administrator = new User("Admin", "Admin", "admin@admin.ru",
+                    passwordEncoder.encode("admin"), rolesAdmin);
+            User user = new User("User", "User", "user@user.ru",
+                    passwordEncoder.encode("user"), rolesUser);
+
             roleService.add(administratorRole);
             roleService.add(userRole);
             userService.add(administrator);
             userService.add(user);
-
         }
     }
-}
+    }

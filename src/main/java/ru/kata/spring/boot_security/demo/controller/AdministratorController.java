@@ -10,7 +10,6 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin")
@@ -39,16 +38,22 @@ public class AdministratorController {
 
     @PostMapping("/add")
     public String addUser(@ModelAttribute("user") @Valid User user,
-                          BindingResult bindingResult) {
+                          BindingResult bindingResult,
+                          ModelMap model) {
+
         if (bindingResult.hasErrors()) {
+            model.addAttribute("allRoles", roleService.findAll());
             return "user_add";
         }
-        Optional<User> userWithSameEmail = userService.findByEmail(user.getEmail());
-        if (userWithSameEmail.isPresent()) {
+
+        try {
+            userService.add(user);
+            return "redirect:/admin";
+        } catch (Exception e) {
+            model.addAttribute("error", "Ошибка при добавлении пользователя: " + e.getMessage());
+            model.addAttribute("allRoles", roleService.findAll());
             return "user_add";
         }
-        userService.add(user);
-        return "redirect:/admin";
     }
 
     @GetMapping("/edit")
@@ -60,19 +65,23 @@ public class AdministratorController {
     }
 
     @PostMapping("/edit")
-    public String editUser(@RequestParam("id") int id, @ModelAttribute("user") @Valid User user,
-                           BindingResult bindingResult) {
+    public String editUser(@RequestParam("id") int id,
+                           @ModelAttribute("user") @Valid User user,
+                           BindingResult bindingResult,
+                           ModelMap model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("allRoles", roleService.findAll());
             return "user_edit";
         }
-        Optional<User> userWithSameEmail = userService.findByEmail(user.getEmail());
-        if (userWithSameEmail.isPresent() && userWithSameEmail.get().getId() != id) {
-            bindingResult.rejectValue("email", "error.user",
-                    "Этот email уже используется другим пользователем.");
+
+        try {
+            userService.update(id, user);
+            return "redirect:/admin";
+        } catch (IllegalArgumentException e) {
+            bindingResult.rejectValue("email", "error.user", e.getMessage());
+            model.addAttribute("allRoles", roleService.findAll());
             return "user_edit";
         }
-        userService.update(id, user);
-        return "redirect:/admin";
     }
 
     @GetMapping("/delete")
